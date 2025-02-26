@@ -14,7 +14,7 @@ public partial class UserCamera : Camera3D
     [Export] private float _wheelSensitivity = 0.05f;
     // 鼠标反向
     [Export] private bool _flipXAxis = false;
-    [Export] private bool _flipYAxis = false;
+    [Export] private bool _flipYAxis = true;
     [Export] private bool _flipWheel = false;
 
 
@@ -53,20 +53,24 @@ public partial class UserCamera : Camera3D
         if (_isLeftMouseButtonPressed && @event is InputEventMouseMotion mouseMotionEvent)
         {
             (float deltaX, float deltaY) = mouseMotionEvent.Relative;
-            _yawNode.Transform =
-                _yawNode.Transform.RotatedLocal(Vector3.Up, deltaX * _mouseXSensitivity * (_flipXAxis ? 1 : -1));
-            
+            float yFactor = _flipYAxis ? -1 : 1;
             _pitchNode.Transform =
-                _pitchNode.Transform.RotatedLocal(Vector3.Right, deltaY * _mouseYSensitivity * (_flipYAxis ? -1 : 1));
+                _pitchNode.Transform.RotatedLocal(Vector3.Right, deltaY * _mouseYSensitivity * yFactor);
+
+            float xFactor = _flipXAxis ? 1 : -1;
+            if (_pitchNode.Transform.Basis.Column2.Dot(Vector3.Forward) > 0)
+            {
+                xFactor = -xFactor;
+            }
+
+            _yawNode.Transform =
+                _yawNode.Transform.RotatedLocal(Vector3.Up, deltaX * _mouseXSensitivity * xFactor);
         }
 
         // 处理键盘事件
-        if (@event is InputEventKey keyEvent)
+        if (@event is InputEventKey { Keycode: Key.Escape, Pressed: true })
         {
-            if (keyEvent.Keycode == Key.Escape && keyEvent.Pressed)
-            {
-                GetTree().Quit();
-            }
+            GetTree().Quit();
         }
     }
 }

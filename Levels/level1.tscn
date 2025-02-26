@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3 uid="uid://csoh6ccwcrlta"]
+
+[ext_resource type="Script" uid="uid://cdeqqjt51c11" path="res://Scripts/UserCamera.cs" id="1_i4kf4"]
+[ext_resource type="Script" uid="uid://h64p4n4fc285" path="res://Scripts/MeshDynamicLoad.cs" id="1_t21ke"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_njhy2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fy36t"]
+next_pass = SubResource("ShaderMaterial_njhy2")
+shading_mode = 0
+specular_mode = 2
+albedo_color = Color(0.357813, 0.355844, 0.330417, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i4kf4"]
+next_pass = SubResource("StandardMaterial3D_fy36t")
+cull_mode = 1
+albedo_color = Color(0.789062, 0.727945, 0.114661, 1)
+emission_enabled = true
+emission = Color(0.692765, 0.704687, 0.159656, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Lights" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lights"]
+visible = false
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Lights"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+visible = false
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="DirectionalLight3D4" type="DirectionalLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 0, 0)
+
+[node name="Obj" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_i4kf4")
+script = ExtResource("1_t21ke")
+
+[node name="Yaw" type="Node3D" parent="."]
+
+[node name="Pitch" type="Node3D" parent="Yaw"]
+
+[node name="Camera3D" type="Camera3D" parent="Yaw/Pitch" node_paths=PackedStringArray("_targetNode", "_yawNode", "_pitchNode")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+projection = 1
+current = true
+script = ExtResource("1_i4kf4")
+_targetNode = NodePath("../../../Obj")
+_yawNode = NodePath("../..")
+_pitchNode = NodePath("..")
+_flipYAxis = true
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Yaw/Pitch/Camera3D"]

@@ -19,8 +19,3 @@ config/icon="res://icon.svg"
 [dotnet]
 
 project/assembly_name="WavefrontObjViewer"
-
-[editor]
-
-version_control/plugin_name="GitPlugin"
-version_control/autoload_on_startup=true

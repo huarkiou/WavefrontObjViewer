@@ -8,7 +8,7 @@ namespace WavefrontObjViewer.Scripts;
 
 public partial class MeshDynamicLoad : MeshInstance3D
 {
-    [Export] private string _objFilePath = @"D:\Users\huarkiou\Downloads\test4.obj";
+    [Export(PropertyHint.GlobalFile, "*.obj")] private string _objFilePath = @"D:\Users\huarkiou\Downloads\test4.obj";
 
     private void _ready()
     {

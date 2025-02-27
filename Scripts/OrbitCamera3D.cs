@@ -2,21 +2,19 @@ using Godot;
 
 namespace WavefrontObjViewer.Scripts;
 
-public partial class UserCamera : Camera3D
+public partial class OrbitCamera3D : Camera3D
 {
     // 目标
+    [ExportGroup("Orbit")]
     [Export] private Node3D _targetNode;
     [Export] private Node3D _yawNode;
     [Export] private Node3D _pitchNode;
     // 鼠标灵敏度
+    [ExportGroup("Sensitivity")]
     [Export] private float _mouseXSensitivity = 0.005f;
-    [Export] private float _mouseYSensitivity = 0.005f;
-    [Export] private float _wheelSensitivity = 0.05f;
-    // 鼠标反向
-    [Export] private bool _flipXAxis = false;
-    [Export] private bool _flipYAxis = true;
-    [Export] private bool _flipWheel = false;
-
+    [Export] private float _mouseYSensitivity = -0.005f;
+    [Export(PropertyHint.Range, "-0.5,0.5,0.01")]
+    private float _wheelSensitivity = 0.05f;
 
     private bool _isLeftMouseButtonPressed;
     private bool _isMiddleMouseButtonPressed;
@@ -41,10 +39,10 @@ public partial class UserCamera : Camera3D
                     _isMiddleMouseButtonPressed = mouseButtonEvent.Pressed;
                     break;
                 case MouseButton.WheelDown:
-                    Size *= _flipWheel ? 1 - _wheelSensitivity : 1 + _wheelSensitivity;
+                    Size *= 1 + _wheelSensitivity;
                     break;
                 case MouseButton.WheelUp:
-                    Size *= _flipWheel ? 1 + _wheelSensitivity : 1 - _wheelSensitivity;
+                    Size *= 1 - _wheelSensitivity;
                     break;
             }
         }
@@ -53,11 +51,10 @@ public partial class UserCamera : Camera3D
         if (_isLeftMouseButtonPressed && @event is InputEventMouseMotion mouseMotionEvent)
         {
             (float deltaX, float deltaY) = mouseMotionEvent.Relative;
-            float yFactor = _flipYAxis ? -1 : 1;
             _pitchNode.Transform =
-                _pitchNode.Transform.RotatedLocal(Vector3.Right, deltaY * _mouseYSensitivity * yFactor);
+                _pitchNode.Transform.RotatedLocal(Vector3.Right, deltaY * _mouseYSensitivity);
 
-            float xFactor = _flipXAxis ? 1 : -1;
+            float xFactor = -1;
             if (_pitchNode.Transform.Basis.Column2.Dot(Vector3.Forward) > 0)
             {
                 xFactor = -xFactor;

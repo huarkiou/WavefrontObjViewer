@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://csoh6ccwcrlta"]
 
-[ext_resource type="Script" uid="uid://cdeqqjt51c11" path="res://Scripts/UserCamera.cs" id="1_i4kf4"]
 [ext_resource type="Script" uid="uid://h64p4n4fc285" path="res://Scripts/MeshDynamicLoad.cs" id="1_t21ke"]
+[ext_resource type="Script" uid="uid://di6hsvb4vlcgm" path="res://Scripts/OrbitCamera3D.cs" id="2_i4kf4"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fy36t"]
 specular_mode = 2
@@ -28,7 +28,7 @@ script = ExtResource("1_t21ke")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 projection = 1
 current = true
-script = ExtResource("1_i4kf4")
+script = ExtResource("2_i4kf4")
 _targetNode = NodePath("../../../Obj")
 _yawNode = NodePath("../..")
 _pitchNode = NodePath("..")

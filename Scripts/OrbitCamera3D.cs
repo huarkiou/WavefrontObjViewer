@@ -5,16 +5,34 @@ namespace WavefrontObjViewer.Scripts;
 public partial class OrbitCamera3D : Camera3D
 {
     // 目标
-    [ExportGroup("Orbit")]
-    [Export] private Node3D _targetNode;
-    [Export] private Node3D _yawNode;
-    [Export] private Node3D _pitchNode;
+    [Export] private Node3D _orbitTarget;
+    [Export(PropertyHint.Range, "0,10,1,or_greater")]
+    private float Distance
+    {
+        get => Transform.Origin.Z;
+        set => Transform = new Transform3D { Origin = new Vector3(0f, 0f, value), Basis = Transform.Basis };
+    }
     // 鼠标灵敏度
     [ExportGroup("Sensitivity")]
     [Export] private float _mouseXSensitivity = 0.005f;
     [Export] private float _mouseYSensitivity = -0.005f;
     [Export(PropertyHint.Range, "-0.5,0.5,0.01")]
     private float _wheelSensitivity = 0.05f;
+
+    private Node3D _pivotPoint;
+
+    public override void _Ready()
+    {
+        _pivotPoint = GetParentNode3D();
+        if (_orbitTarget != null)
+        {
+            _pivotPoint.Transform = _orbitTarget.Transform;
+        }
+        else
+        {
+            _orbitTarget = _pivotPoint;
+        }
+    }
 
     private bool _isLeftMouseButtonPressed;
     private bool _isMiddleMouseButtonPressed;
@@ -39,10 +57,26 @@ public partial class OrbitCamera3D : Camera3D
                     _isMiddleMouseButtonPressed = mouseButtonEvent.Pressed;
                     break;
                 case MouseButton.WheelDown:
-                    Size *= 1 + _wheelSensitivity;
+                    if (Projection == ProjectionType.Orthogonal)
+                    {
+                        Size *= 1 + _wheelSensitivity;
+                    }
+                    else if (Projection == ProjectionType.Perspective)
+                    {
+                        Fov *= 1 + _wheelSensitivity;
+                    }
+
                     break;
                 case MouseButton.WheelUp:
-                    Size *= 1 - _wheelSensitivity;
+                    if (Projection == ProjectionType.Orthogonal)
+                    {
+                        Size *= 1 - _wheelSensitivity;
+                    }
+                    else if (Projection == ProjectionType.Perspective)
+                    {
+                        Fov *= 1 - _wheelSensitivity;
+                    }
+
                     break;
             }
         }
@@ -51,17 +85,17 @@ public partial class OrbitCamera3D : Camera3D
         if (_isLeftMouseButtonPressed && @event is InputEventMouseMotion mouseMotionEvent)
         {
             (float deltaX, float deltaY) = mouseMotionEvent.Relative;
-            _pitchNode.Transform =
-                _pitchNode.Transform.RotatedLocal(Vector3.Right, deltaY * _mouseYSensitivity);
+
 
             float xFactor = -1;
-            if (_pitchNode.Transform.Basis.Column2.Dot(Vector3.Forward) > 0)
+            if (GlobalTransform.Basis.Column2.Dot(GlobalPosition.DirectionTo(_pivotPoint.GlobalPosition)) > 0)
             {
                 xFactor = -xFactor;
             }
 
-            _yawNode.Transform =
-                _yawNode.Transform.RotatedLocal(Vector3.Up, deltaX * _mouseXSensitivity * xFactor);
+            _pivotPoint.Transform =
+                _pivotPoint.Transform.RotatedLocal(Vector3.Up, deltaX * _mouseXSensitivity * xFactor);
+            _pivotPoint.Transform = _pivotPoint.Transform.RotatedLocal(Vector3.Right, deltaY * _mouseYSensitivity);
         }
 
         // 处理键盘事件

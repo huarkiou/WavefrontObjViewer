@@ -23,7 +23,19 @@ public partial class OrbitCamera3D : Camera3D
 
     public override void _Ready()
     {
-        _pivotPoint = GetParentNode3D();
+        if (GetParent() == GetTree().CurrentScene)
+        {
+            _pivotPoint = new Node3D();
+            var parent = GetParent();
+            parent.CallDeferred("remove_child", this);
+            parent.CallDeferred("add_child", _pivotPoint);
+            _pivotPoint.CallDeferred("add_child", this);
+        }
+        else
+        {
+            _pivotPoint = GetParentNode3D();
+        }
+
         if (_orbitTarget != null)
         {
             _pivotPoint.Transform = _orbitTarget.Transform;

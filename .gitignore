@@ -3,5 +3,8 @@
 /android/
 /build
 
-#
+# IDE
 .idea
+.vs
+.vscode
+*.DotSettings.user

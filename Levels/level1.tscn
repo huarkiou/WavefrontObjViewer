@@ -29,5 +29,5 @@ script = ExtResource("3_fy36t")
 _orbitTarget = NodePath("../../Obj")
 Distance = 1.0
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Node3D"]
+[node name="OmniLight3D-back" type="OmniLight3D" parent="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)

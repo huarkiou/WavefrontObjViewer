@@ -8,7 +8,8 @@ namespace WavefrontObjViewer.Scripts;
 
 public partial class MeshDynamicLoad : MeshInstance3D
 {
-    [Export(PropertyHint.GlobalFile, "*.obj")] private string _objFilePath = @"D:\Users\huarkiou\Downloads\test4.obj";
+    [Export(PropertyHint.GlobalFile, "*.obj")]
+    private string _objFilePath = @"D:\Users\huarkiou\Downloads\sltn.obj";
 
     private void _ready()
     {
@@ -35,6 +36,7 @@ public partial class MeshDynamicLoad : MeshInstance3D
     private void SetMeshByObjFile(string objFile)
     {
         WavefrontObjLoader objLoader = new(objFile);
+
         float maxX = objLoader.Positions.Max(v => v.X);
         float minX = objLoader.Positions.Min(v => v.X);
         float length = maxX - minX;
@@ -42,7 +44,7 @@ public partial class MeshDynamicLoad : MeshInstance3D
         var vertices = new Vector3[objLoader.Positions.Count];
         for (var i = 0; i < objLoader.Positions.Count; i++)
         {
-            vertices[i] = new Vector3(objLoader.Positions[i].X - length / 2.0f, objLoader.Positions[i].Y,
+            vertices[i] = new Vector3(objLoader.Positions[i].X, objLoader.Positions[i].Y,
                               objLoader.Positions[i].Z) /
                           length;
         }
@@ -53,6 +55,11 @@ public partial class MeshDynamicLoad : MeshInstance3D
             triangles[3 * i + 0] = objLoader.Faces[i].v_idx[0];
             triangles[3 * i + 1] = objLoader.Faces[i].v_idx[1];
             triangles[3 * i + 2] = objLoader.Faces[i].v_idx[2];
+        }
+
+        if (objLoader.Normals.Count != objLoader.Positions.Count)
+        {
+            objLoader.HasNormals = false;
         }
 
         var normals = objLoader.HasNormals

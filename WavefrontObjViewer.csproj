@@ -23,4 +23,8 @@
     <TrimmerRootAssembly Include="GodotSharp" />
     <TrimmerRootAssembly Include="$(TargetName)" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Levels\" />
+  </ItemGroup>
 </Project>

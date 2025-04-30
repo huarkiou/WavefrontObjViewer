@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://csoh6ccwcrlta"]
+[gd_scene load_steps=7 format=3 uid="uid://csoh6ccwcrlta"]
 
+[ext_resource type="ArrayMesh" uid="uid://evilobo34uxt" path="res://Models/sltn.obj" id="1_njhy2"]
 [ext_resource type="Script" uid="uid://h64p4n4fc285" path="res://Scripts/MeshDynamicLoad.cs" id="1_t21ke"]
 [ext_resource type="Script" uid="uid://di6hsvb4vlcgm" path="res://Scripts/OrbitCamera3D.cs" id="3_fy36t"]
+[ext_resource type="Script" uid="uid://wjac4nd1aq14" path="res://Scripts/ToolBarViews.cs" id="3_njhy2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fy36t"]
 specular_mode = 2
@@ -11,13 +13,18 @@ albedo_color = Color(0.390625, 0.388322, 0.358582, 1)
 next_pass = SubResource("StandardMaterial3D_fy36t")
 cull_mode = 1
 albedo_color = Color(0.765625, 0.720905, 0.272156, 1)
+metallic = 0.08
 emission_enabled = true
 emission = Color(0.692765, 0.704687, 0.159656, 1)
+ao_enabled = true
+ao_light_affect = 0.15
 
 [node name="Node3D" type="Node3D"]
 
 [node name="Obj" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_i4kf4")
+gi_mode = 2
+mesh = ExtResource("1_njhy2")
 script = ExtResource("1_t21ke")
 
 [node name="Node3D" type="Node3D" parent="."]
@@ -29,5 +36,62 @@ script = ExtResource("3_fy36t")
 _orbitTarget = NodePath("../../Obj")
 Distance = 1.0
 
-[node name="OmniLight3D-back" type="OmniLight3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+[node name="OmniLight3D-key" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2)
+shadow_enabled = true
+
+[node name="OmniLight3D-fill" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2)
+light_energy = 0.7
+
+[node name="OmniLight3D-rim" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+light_energy = 0.4
+
+[node name="ToolBar" type="VBoxContainer" parent="." node_paths=PackedStringArray("_buttonToggleView", "_buttonDefaultView", "_buttonFrontView", "_buttonLeftView", "_buttonTopView", "_buttonBackView", "_buttonRightView", "_buttonBottomView", "_cameraFocus", "_orbitCamera3D")]
+offset_right = 40.0
+offset_bottom = 40.0
+alignment = 1
+script = ExtResource("3_njhy2")
+_buttonToggleView = NodePath("ButtonToggleView")
+_buttonDefaultView = NodePath("ButtonDefaultView")
+_buttonFrontView = NodePath("ButtonFrontView")
+_buttonLeftView = NodePath("ButtonLeftView")
+_buttonTopView = NodePath("ButtonTopView")
+_buttonBackView = NodePath("ButtonBackView")
+_buttonRightView = NodePath("ButtonRightView")
+_buttonBottomView = NodePath("ButtonBottomView")
+_cameraFocus = NodePath("../Node3D")
+_orbitCamera3D = NodePath("../Node3D/OrbitCamera3D")
+
+[node name="ButtonToggleView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "正交视图"
+
+[node name="ButtonDefaultView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "重置"
+
+[node name="ButtonFrontView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "正视图"
+
+[node name="ButtonLeftView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "左视图"
+
+[node name="ButtonTopView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "顶视图"
+
+[node name="ButtonBackView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "后视图"
+
+[node name="ButtonRightView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "右视图"
+
+[node name="ButtonBottomView" type="Button" parent="ToolBar"]
+layout_mode = 2
+text = "底视图"

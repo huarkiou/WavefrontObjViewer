@@ -6,7 +6,7 @@ namespace WavefrontObjViewer.Scripts;
 public partial class OrbitCamera3D : Camera3D
 {
     public const float DefaultSize = 1.0f;
-    public const float DefaultFov = (float)(75d / 180d * double.Pi);
+    public const float DefaultFov = 75f;
     // 目标
     [Export] private Node3D _orbitTarget;
     [Export(PropertyHint.Range, "0,10,1,or_greater")]
